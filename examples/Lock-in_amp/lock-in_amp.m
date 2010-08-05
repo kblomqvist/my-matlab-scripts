@@ -1,14 +1,14 @@
-% Phase sensitive detector demonstration :: Kim Blomqvist 2010
+% Phase sensitive detector demonstration
+% Kim Blomqvist 8/5/2010
 %
 %% Add library path
-CURRENT_PATH = cd;
+CURRENT_PATH = pwd;
 LIBRARY_PATH = [CURRENT_PATH, '/../../library'];
 
-addpath([LIBRARY_PATH, '/kb/signals'], '-begin');
 addpath([LIBRARY_PATH, '/kb/electronics'], '-begin');
 addpath([LIBRARY_PATH, '/kb/math'], '-begin');
 
-%% Static demo
+%% Demo, plots waveform and fft from i and q channel to subfigures
 Fs = 10000;     % Samplig frequency
 T = 1/Fs;       % Sample time
 L = 1000;       % Length of signal
@@ -16,7 +16,7 @@ t = (0:L-1)*T;  % Time vector
 
 % Local oscillators
 A_lo = 1; f_lo = 50;
-lo_i = A_lo*sin(2*pi*f_lo*t);        % LO oscillator in phase
+lo_i = A_lo*sin(2*pi*f_lo*t);        % LO in phase
 lo_q = A_lo*sin(2*pi*f_lo*t + pi/2); % LO quadrature phase
 
 % Use comparator for LO signals
@@ -40,17 +40,21 @@ q_filt = kb_integral(q);
 figure(1);
 subplot(3,2,1); plot(t, lo_i, 'r--', 'lineWidth', 2); hold on; plot(t, in);
 title('Signal and local in-phase oscillator waveforms');
+legend('LO', 'Signal');
 xlabel('Time (ms)'); ylabel('Amplitude (V)'); hold off;
 
 subplot(3,2,2); plot(t, lo_q, 'r--', 'lineWidth', 2), hold on; plot(t, in);
 title('Signal and local quadrature phase oscillator waveforms');
+legend('LO +90deg', 'Signal');
 xlabel('Time (ms)'); ylabel('Amplitude (V)'); hold off;
 
-subplot(3,2,3); plot(t, i_filt, 'r--', 'lineWidth', 2); hold on; plot(t, i);
+subplot(3,2,3); plot(t, i); set(refline([0 i_filt]), 'Color', 'r', 'lineWidth', 2);
 title('In-phase channel and dc');
-xlabel('Time (ms)'); ylabel('Amplitude (V)'); hold off;
+legend('Mixed signal', 'DC');
+xlabel('Time (ms)'); ylabel('Amplitude (V)');
 
-subplot(3,2,4); plot(t, q_filt, 'r--', 'lineWidth', 2), hold on; plot(t, q);
+subplot(3,2,4); plot(t, q); set(refline([0 q_filt]), 'Color', 'r', 'lineWidth', 2);
+legend('Mixed signal', 'DC');
 title('Quadrature phase channel and dc');
 xlabel('Time (ms)'); ylabel('Amplitude (V)'); hold off;
 
